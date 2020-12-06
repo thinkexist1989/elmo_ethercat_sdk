@@ -78,6 +78,16 @@ target_link_libraries(${PROJECT_NAME}_csv_example_standalone
   ${catkin_LIBRARIES}
 )
 
+add_executable(${PROJECT_NAME}_csp_example
+  src/csp_example.cpp
+)
+add_dependencies(${PROJECT_NAME}_csp_example
+  ${catkin_EXPORTED_TARGETS}
+)
+target_link_libraries(${PROJECT_NAME}_csp_example
+  ${catkin_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
@@ -86,6 +96,7 @@ install(
   TARGETS
     ${PROJECT_NAME}_cst_example
     ${PROJECT_NAME}_csv_example_standalone
+    ${PROJECT_NAME}_csp_example
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -101,6 +112,7 @@ if(cmake_clang_tools_FOUND)
     TARGETS
       ${PROJECT_NAME}_cst_example
       ${PROJECT_NAME}_csv_example_standalone
+      ${PROJECT_NAME}_csp_example
     SOURCE_DIRS
       ${CMAKE_CURRENT_SOURCE_DIR}/src
       ${CMAKE_CURRENT_SOURCE_DIR}/include

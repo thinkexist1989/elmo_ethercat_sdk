@@ -152,18 +152,23 @@ namespace elmo
    */
 
       double newVelocity = 0.0;
+      double newPosition = 0.0;
       int i = 0;
       // drives will follow the sine wave velocity profile until Ctrl-c is pressed on the keyboard
       while (!sigint)
       {
         // Define new command.
-        newVelocity = 10 * SINE_AMPLITUDE * sin(2 * M_PI / SINE_PERIOD * 0.01 * i);
+        // newVelocity = SINE_AMPLITUDE * sin(2 * M_PI / SINE_PERIOD * 0.01 * i);
+        newPosition = 28 * M_PI * sin(2 * M_PI / SINE_PERIOD * 0.002 * i); //接收的Position值是电机的Rad值，未计算减速比
+        // newVelocity = 2 * M_PI / SINE_PERIOD * 0.01 * 10 * cos(2 * M_PI / SINE_PERIOD * 0.01 * i);
         /*
      * Set mode of operation.
      * This needs to be done if USE_MULTIPLE_MODE_OF_OPERATIONS is set to true.
      */
-        command.setModeOfOperation(ModeOfOperationEnum::CyclicSynchronousVelocityMode);
-        command.setTargetVelocity(newVelocity);
+        command.setModeOfOperation(ModeOfOperationEnum::CyclicSynchronousPositionMode);
+        // command.setTargetVelocity(newVelocity);
+        command.setTargetPosition(newPosition);
+        // command.setTargetVelocity(newVelocity);
 
         // Stage new command.
         for (const auto &elmodrive : elmodrives)
@@ -211,6 +216,7 @@ namespace elmo
               const double current = elmodrive->getReading().getActualCurrent();
               const double torque = elmodrive->getReading().getActualTorque();
               const double velocity = elmodrive->getReading().getActualVelocity();
+              const double position = elmodrive->getReading().getActualPosition();
 
               // Print the readings.
               MELO_INFO_STREAM("ELMO drive reading of '" << elmodrive->getNameOfSlave() << "':");
@@ -218,6 +224,7 @@ namespace elmo
               MELO_INFO_STREAM("  Current:     " << current << " A");
               MELO_INFO_STREAM("  Torque:      " << torque << " Nm");
               MELO_INFO_STREAM("  Velocity:    " << velocity << " rad/s");
+              MELO_INFO_STREAM("  Position:    " << position << " n");
             }
             counter = 0;
           }

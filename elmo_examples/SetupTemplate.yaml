@@ -67,7 +67,7 @@ elmodrives:
   # Unit                    -
   # Range                   -
   # Default                 "eth0"
-  interface_name:           "enp0s31f6"
+  interface_name:           "enp6s0"
 
   # Parameter               ethercat_address
   # Description             The EtherCAT slave address of the ELMO drive.

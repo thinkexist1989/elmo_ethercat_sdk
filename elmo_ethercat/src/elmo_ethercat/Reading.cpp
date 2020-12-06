@@ -18,123 +18,151 @@
 ** along with the elmo_ethercat_sdk. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define _USE_MATH_DEFINES  // for M_PI
+#define _USE_MATH_DEFINES // for M_PI
 #include <cmath>
 
 #include <elmo_ethercat/Reading.hpp>
 
-namespace elmo {
-namespace ethercat {
+namespace elmo
+{
+  namespace ethercat
+  {
 
-double Reading::getAgeOfLastErrorInMicroseconds() const {
-  ReadingDuration errorDuration = ReadingClock::now() - lastError_.second;
-  return errorDuration.count();
-}
-
-double Reading::getAgeOfLastFaultInMicroseconds() const {
-  ReadingDuration faultDuration = ReadingClock::now() - lastFault_.second;
-  return faultDuration.count();
-}
-
-void Reading::addError(ErrorType errorType) {
-  ErrorPair errorPair;
-  errorPair.first = errorType;
-  errorPair.second = ReadingClock::now();
-  if (lastError_.first == errorType) {
-    if (forceAppendEqualError_) {
-      errors_.push_front(errorPair);
-    } else {
-      errors_.pop_front();
-      errors_.push_front(errorPair);
+    double Reading::getAgeOfLastErrorInMicroseconds() const
+    {
+      ReadingDuration errorDuration = ReadingClock::now() - lastError_.second;
+      return errorDuration.count();
     }
-  } else {
-    errors_.push_front(errorPair);
-  }
-  lastError_ = errorPair;
-  if (errors_.size() > errorStorageCapacity_) {
-    errors_.pop_back();
-  }
-  hasUnreadError_ = true;
-}
 
-void Reading::addFault(uint16_t faultCode) {
-  FaultPair faultPair;
-  faultPair.first = faultCode;
-  faultPair.second = ReadingClock::now();
-  if (lastFault_.first == faultCode) {
-    if (forceAppendEqualFault_) {
-      faults_.push_front(faultPair);
-    } else {
-      faults_.pop_front();
-      faults_.push_front(faultPair);
+    double Reading::getAgeOfLastFaultInMicroseconds() const
+    {
+      ReadingDuration faultDuration = ReadingClock::now() - lastFault_.second;
+      return faultDuration.count();
     }
-  } else {
-    faults_.push_front(faultPair);
-  }
-  lastFault_ = faultPair;
-  if (faults_.size() > faultStorageCapacity_) {
-    faults_.pop_back();
-  }
-  hasUnreadFault_ = true;
-}
 
-ErrorTimePairDeque Reading::getErrors() const {
-  ReadingTimePoint now = ReadingClock::now();
-  ErrorTimePairDeque errors;
-  errors.resize(errors_.size());
-  ReadingDuration duration;
-  for (unsigned int i = 0; i < errors_.size(); i++) {
-    errors[i].first = errors_[i].first;
-    duration = now - errors_[i].second;
-    errors[i].second = duration.count();
-  }
-  hasUnreadError_ = false;
-  return errors;
-}
+    void Reading::addError(ErrorType errorType)
+    {
+      ErrorPair errorPair;
+      errorPair.first = errorType;
+      errorPair.second = ReadingClock::now();
+      if (lastError_.first == errorType)
+      {
+        if (forceAppendEqualError_)
+        {
+          errors_.push_front(errorPair);
+        }
+        else
+        {
+          errors_.pop_front();
+          errors_.push_front(errorPair);
+        }
+      }
+      else
+      {
+        errors_.push_front(errorPair);
+      }
+      lastError_ = errorPair;
+      if (errors_.size() > errorStorageCapacity_)
+      {
+        errors_.pop_back();
+      }
+      hasUnreadError_ = true;
+    }
 
-FaultTimePairDeque Reading::getFaults() const {
-  ReadingTimePoint now = ReadingClock::now();
-  FaultTimePairDeque faults;
-  faults.resize(faults_.size());
-  ReadingDuration duration;
-  for (unsigned int i = 0; i < faults_.size(); i++) {
-    faults[i].first = faults_[i].first;
-    duration = now - faults_[i].second;
-    faults[i].second = duration.count();
-  }
-  hasUnreadFault_ = false;
-  return faults;
-}
+    void Reading::addFault(uint16_t faultCode)
+    {
+      FaultPair faultPair;
+      faultPair.first = faultCode;
+      faultPair.second = ReadingClock::now();
+      if (lastFault_.first == faultCode)
+      {
+        if (forceAppendEqualFault_)
+        {
+          faults_.push_front(faultPair);
+        }
+        else
+        {
+          faults_.pop_front();
+          faults_.push_front(faultPair);
+        }
+      }
+      else
+      {
+        faults_.push_front(faultPair);
+      }
+      lastFault_ = faultPair;
+      if (faults_.size() > faultStorageCapacity_)
+      {
+        faults_.pop_back();
+      }
+      hasUnreadFault_ = true;
+    }
 
-ErrorType Reading::getLastError() const {
-  hasUnreadError_ = false;
-  return lastError_.first;
-}
-uint16_t Reading::getLastFault() const {
-  // return 0 if no fault occured
-  if (!hasUnreadFault_) {
-    return 0;
-  }
-  hasUnreadFault_ = false;
-  return lastFault_.first;
-}
+    ErrorTimePairDeque Reading::getErrors() const
+    {
+      ReadingTimePoint now = ReadingClock::now();
+      ErrorTimePairDeque errors;
+      errors.resize(errors_.size());
+      ReadingDuration duration;
+      for (unsigned int i = 0; i < errors_.size(); i++)
+      {
+        errors[i].first = errors_[i].first;
+        duration = now - errors_[i].second;
+        errors[i].second = duration.count();
+      }
+      hasUnreadError_ = false;
+      return errors;
+    }
 
-void Reading::configureReading(const Configuration& configuration) {
-  errorStorageCapacity_ = configuration.getErrorStorageCapacity();
-  faultStorageCapacity_ = configuration.getFaultStorageCapacity();
-  forceAppendEqualError_ = configuration.getForceAppendEqualError();
-  forceAppendEqualFault_ = configuration.getForceAppendEqualFault();
+    FaultTimePairDeque Reading::getFaults() const
+    {
+      ReadingTimePoint now = ReadingClock::now();
+      FaultTimePairDeque faults;
+      faults.resize(faults_.size());
+      ReadingDuration duration;
+      for (unsigned int i = 0; i < faults_.size(); i++)
+      {
+        faults[i].first = faults_[i].first;
+        duration = now - faults_[i].second;
+        faults[i].second = duration.count();
+      }
+      hasUnreadFault_ = false;
+      return faults;
+    }
 
-  positionFactorIntegerToRad_ = (2.0 * M_PI) / static_cast<double>(configuration.getPositionEncoderResolution());
+    ErrorType Reading::getLastError() const
+    {
+      hasUnreadError_ = false;
+      return lastError_.first;
+    }
+    uint16_t Reading::getLastFault() const
+    {
+      // return 0 if no fault occured
+      if (!hasUnreadFault_)
+      {
+        return 0;
+      }
+      hasUnreadFault_ = false;
+      return lastFault_.first;
+    }
 
-  velocityFactorIntegerPerSecToRadPerSec_ = (2.0 * M_PI) / static_cast<double>(configuration.getPositionEncoderResolution());
+    void Reading::configureReading(const Configuration &configuration)
+    {
+      errorStorageCapacity_ = configuration.getErrorStorageCapacity();
+      faultStorageCapacity_ = configuration.getFaultStorageCapacity();
+      forceAppendEqualError_ = configuration.getForceAppendEqualError();
+      forceAppendEqualFault_ = configuration.getForceAppendEqualFault();
 
-  double currentFactor = configuration.getMotorRatedCurrentA() / 1000.0;
+      positionFactorIntegerToRad_ = (2.0 * M_PI) / static_cast<double>(configuration.getPositionEncoderResolution());
 
-  currentFactorIntegerToAmp_ = currentFactor;
+      velocityFactorIntegerPerSecToRadPerSec_ = (2.0 * M_PI) / static_cast<double>(configuration.getPositionEncoderResolution());
 
-  torqueFactorIntegerToNm_ = currentFactor * configuration.getMotorConstant() * configuration.getGearRatio();
-}
+      double currentFactor = configuration.getMotorRatedCurrentA() / 1000.0;
 
-}  // namespace ethercat
-}  // namespace elmo
+      currentFactorIntegerToAmp_ = currentFactor;
+
+      torqueFactorIntegerToNm_ = currentFactor * configuration.getMotorConstant() * configuration.getGearRatio();
+    }
+
+  } // namespace ethercat
+} // namespace elmo

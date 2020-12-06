@@ -38,9 +38,9 @@ Hardware:
   TX_PDO_TYPE: "TxPdoStandard" # only allowed option for changing modes of operation
   USE_MULTIPLE_MODE_OF_OPERATIONS: true # this must be set to true if the mode of operation must be changed during the communication
   MODE_OF_OPERATION: "CyclicSynchronousVelocityMode" # the first mode of operation being set after startup (required)
-  POSITION_ENCODER_RESOLUTION: 1048576 # motor encoder resolution in bits (used for commutation)
+  POSITION_ENCODER_RESOLUTION: 4000 # motor encoder resolution in bits (used for commutation)
 
-  GEAR_RATIO: [10,1] # [motor revolutions, output revolutions]
-  MOTOR_CONSTANT: 1.0 # [Nm/A] motor torque constant
-  MAX_CURRENT: 2.0 # [A] max IQ current
-  MOTOR_RATED_CURRENT: 1.5 # [A] motor rated current (used for normalization of 16bit integer value, 1/1000 resolution)
+  GEAR_RATIO: [28,1] # [motor revolutions, output revolutions]
+  MOTOR_CONSTANT: 0.0273 # [Nm/A] motor torque constant
+  MAX_CURRENT: 10.0 # [A] max IQ current
+  MOTOR_RATED_CURRENT: 4.12 # [A] motor rated current (used for normalization of 16bit integer value, 1/1000 resolution)
