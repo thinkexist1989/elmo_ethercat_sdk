@@ -42,6 +42,9 @@
 #include <elmo_ethercat/ElmoEthercat.hpp>
 #include <elmo_ethercat/ElmoEthercatMaster.hpp>
 
+#include <iostream>
+#include <fstream>
+
 #define _USE_MATH_DEFINES
 
 #define SINE_PERIOD 4.0            /// Period of the sine profile the drives will follow [s].
@@ -58,6 +61,11 @@ std::atomic<bool> sigint{false};
  * The path to the config file
  */
 std::string setupFile;
+
+/*
+ * The file save the data
+ */
+std::string dataSaveFile = "/home/think/catkin_ws/data.csv";
 
 namespace elmo
 {
@@ -153,6 +161,15 @@ namespace elmo
 
       double newVelocity = 0.0;
       int i = 0;
+
+      std::ofstream dataFile;
+      dataFile.open(dataSaveFile, std::ios::out | std::ios::trunc);
+      dataFile << "position"
+               << "\t"
+               << "velocity"
+               << "\t"
+               << "torque" << std::endl;
+
       // drives will follow the sine wave velocity profile until Ctrl-c is pressed on the keyboard
       while (!sigint)
       {
@@ -211,6 +228,9 @@ namespace elmo
               const double current = elmodrive->getReading().getActualCurrent();
               const double torque = elmodrive->getReading().getActualTorque();
               const double velocity = elmodrive->getReading().getActualVelocity();
+              const double position = elmodrive->getReading().getActualPosition();
+
+              dataFile << position << "\t" << velocity << "\t" << torque << std::endl;
 
               // Print the readings.
               MELO_INFO_STREAM("ELMO drive reading of '" << elmodrive->getNameOfSlave() << "':");
@@ -229,6 +249,8 @@ namespace elmo
       }
 
       sigint = true;
+
+      dataFile.close();
 
       /*
    * STEP 7)

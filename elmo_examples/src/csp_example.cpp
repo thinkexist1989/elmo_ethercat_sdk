@@ -159,7 +159,7 @@ namespace elmo
       {
         // Define new command.
         // newVelocity = SINE_AMPLITUDE * sin(2 * M_PI / SINE_PERIOD * 0.01 * i);
-        newPosition = 28 * M_PI * sin(2 * M_PI / SINE_PERIOD * 0.002 * i); //接收的Position值是电机的Rad值，未计算减速比
+        newPosition = 12.6 * M_PI * sin(2 * M_PI / SINE_PERIOD * 0.0004 * i); //接收的Position值是电机的Rad值，未计算减速比
         // newVelocity = 2 * M_PI / SINE_PERIOD * 0.01 * 10 * cos(2 * M_PI / SINE_PERIOD * 0.01 * i);
         /*
      * Set mode of operation.
@@ -231,7 +231,7 @@ namespace elmo
         }
 
         // New commands are set approx. 100x per second
-        usleep(10000);
+        usleep(700);
         i++;
       }
 

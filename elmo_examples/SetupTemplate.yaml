@@ -58,7 +58,7 @@ elmodrives:
   # Range                   -
   # Default                 No file is loaded and the default configuration is
   #                         used.
-  configuration_file:       "ConfigurationTemplate.yaml"
+  configuration_file:       "Configuration126.yaml"
 
   # Parameter               interface_name
   # Description             The EtherCAT bus/interface where the ELMO drive is connected
